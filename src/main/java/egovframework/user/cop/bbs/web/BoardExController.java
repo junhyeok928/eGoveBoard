@@ -128,4 +128,35 @@ public class BoardExController {
 		
 		return "forward:/user/cop/bbs/selectBoardList.do";
 	}
+	@RequestMapping("/updateBoardView.do")
+	public String updateArticleView(@ModelAttribute("searchVO") BoardVO boardVO, @ModelAttribute("board") BoardVO vo,
+			ModelMap model) throws Exception {
+		BoardVO bdvo = new BoardVO();
+		model.addAttribute("articleVO", bdvo);
+		return "egovframework/user/cop/bbs/BBSBoardUpdt";
+	}
+	
+	@RequestMapping("/updateBoard.do")
+	public String updateBoard(final MultipartHttpServletRequest multiRequest,
+			@ModelAttribute("searchVO") BoardVO boardVO, @ModelAttribute("board") BoardVO board,
+			BindingResult bindingResult, ModelMap model) throws Exception {
+		String atchFileId = boardVO.getAtchFileId();
+		final List<MultipartFile> files = multiRequest.getFiles("file_1");
+		if (!files.isEmpty()) {
+			if( atchFileId == null || "".equals(atchFileId)) {
+				List<FileVO> result = fileUtil.parseFileInf(files, "BBS_", 0, atchFileId, "");
+				atchFileId = fileMngService.insertFileInfs(result);
+				board.setAtchFileId(atchFileId);
+			} else {
+				FileVO fvo = new FileVO();
+				fvo.setAtchFileId(atchFileId);
+				int cnt = fileMngService.getMaxFileSN(fvo);
+				List<FileVO> _result = fileUtil.parseFileInf(files, "BBS_", cnt, atchFileId, "");
+				fileMngService.updateFileInfs(_result);
+			}
+		}
+		boardExService.updateBoard(board);
+		
+		return "forward:/user/cop/bbs/selectBoardList.do";
+	}
 }

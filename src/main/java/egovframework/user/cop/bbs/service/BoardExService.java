@@ -12,4 +12,6 @@ public interface BoardExService {
 	BoardVO selectBoardDetail(BoardVO boardVO);
 	
 	void insertBoard(Board board) throws FdlException;
+	
+	void updateBoard(Board board) throws Exception;
 }

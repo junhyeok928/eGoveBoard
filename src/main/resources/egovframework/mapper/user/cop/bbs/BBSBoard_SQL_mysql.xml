@@ -247,7 +247,6 @@
 		<selectKey keyProperty="nttNo" resultType="java.lang.Long"
 			order="BEFORE">
 			SELECT IFNULL(MAX(SORT_ORDR),0)+1 AS NTT_NO FROM USERTNBBS
-			/* 시퀀스  */
 		</selectKey>
 
 		INSERT INTO USERTNBBS
@@ -268,4 +267,18 @@
 			 )		
 
 	</insert>
+ 	<update id="updateBoard" parameterType="egovframework.com.cop.bbs.service.BoardVO">
+ 		
+			UPDATE USERTNBBS SET 
+				NTT_SJ = #{nttSj},
+				NTT_CN = #{nttCn}, 
+				NTCE_BGNDE = #{ntceBgnde},		
+				NTCE_ENDDE = #{ntceEndde},
+				LAST_UPDUSR_ID = #{lastUpdusrId},
+				ATCH_FILE_ID = #{atchFileId},
+				LAST_UPDT_PNTTM = SYSDATE(),
+				NOTICE_AT = #{noticeAt}
+			WHERE NTT_ID = #{nttId}
+ 		
+ 	</update>
 </mapper>

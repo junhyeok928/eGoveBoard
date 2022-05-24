@@ -188,7 +188,7 @@ function fn_egov_select_commentList(pageNo) {
 	<div class="btn">
 		<c:if test="${result.ntcrId != 'anonymous'}">
 		<!-- 익명글 수정/삭제 불가  -->
-		<form name="articleForm" action="<c:url value='/cop/bbs/updateArticleView.do'/>" method="post" style="float:left;">
+		<form name="articleForm" action="<c:url value='/user/cop/bbs/updateBoardView.do'/>" method="post" style="float:left;">
 			<input type="submit" class="s_submit" value="<spring:message code="button.update" />" title="<spring:message code="title.update" /> <spring:message code="input.button" />" /><!-- 수정 -->
 			<input type="hidden" name="parnts" value="<c:out value='${result.parnts}'/>" >
 			<input type="hidden" name="sortOrdr" value="<c:out value='${result.sortOrdr}'/>" >
@@ -207,7 +207,7 @@ function fn_egov_select_commentList(pageNo) {
 			<input name="nttId" type="hidden" value="<c:out value="${result.nttId}" />">
 		</form>
 		</c:if>
-		<form name="formList" action="<c:url value='/user/cop/bbs/selectBoardist.do'/>" method="post" style="float:left; margin:0 0 0 3px;">
+		<form name="formList" action="<c:url value='/user/cop/bbs/selectBoardList.do'/>" method="post" style="float:left; margin:0 0 0 3px;">
 			<input type="submit" class="s_submit" value="<spring:message code="button.list" />"><!-- 목록 -->
 		</form>
 		<form name="formScrap" action="<c:url value='/cop/scp/insertArticleScrapView.do'/>" method="post" style="float:left; margin:0 0 0 3px;">

@@ -62,5 +62,10 @@ public class BoardExServiceImpl extends EgovAbstractServiceImpl implements Board
 		
 		boardExDAO.insertBoard(board);
 	}
+	
+	@Override
+	public void updateBoard(Board board) {
+		boardExDAO.updateBoard(board);
+	}
 
 }
