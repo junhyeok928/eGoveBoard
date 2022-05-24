@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.com.cop.bbs.service.Board;
 import egovframework.com.cop.bbs.service.BoardVO;
 
 @Repository("BoardExDAO")
@@ -28,5 +29,9 @@ public class BoardExDAO extends EgovComAbstractDAO {
 
 	public void updateInqireCo(BoardVO boardVO) {
 		update("BBSArticle.updateInqireCo", boardVO);
+	}
+	
+	public void insertBoard(Board board) {
+		insert("BBSBoard.insertBoard", board);
 	}
 }

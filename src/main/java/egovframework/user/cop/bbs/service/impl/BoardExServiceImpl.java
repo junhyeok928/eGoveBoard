@@ -8,8 +8,11 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import egovframework.com.cop.bbs.service.Board;
 import egovframework.com.cop.bbs.service.BoardVO;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import egovframework.rte.fdl.cmmn.exception.FdlException;
+import egovframework.rte.fdl.idgnr.EgovIdGnrService;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.user.cop.bbs.service.BoardExService;
 
@@ -21,6 +24,9 @@ public class BoardExServiceImpl extends EgovAbstractServiceImpl implements Board
 	@Resource(name = "propertiesService")
 	protected EgovPropertyService propertyService;
 
+	@Resource(name = "egovNttIdGnrService")
+    private EgovIdGnrService nttIdgenService;
+	
 	@Override
 	public Map<String, Object> selectBoardList(BoardVO boardVO) {
 		List<?> list = boardExDAO.selectBoardList(boardVO);
@@ -41,6 +47,20 @@ public class BoardExServiceImpl extends EgovAbstractServiceImpl implements Board
 		boardExDAO.updateInqireCo(boardVO);
 
 		return boardExDAO.selectBoardDetail(boardVO);
+	}
+	
+	@Override
+	public void insertBoard(Board board) throws FdlException{
+//		if ("Y".equals(board.getReplyAt())) {
+//			board.setNttId(nttIdgenService.getNextIntegerId());
+//			BoardExDAO.replyArticle(board);
+//		}
+		board.setParnts("0");
+		board.setReplyLc("0");
+		board.setReplyAt("N");
+		board.setNttId(nttIdgenService.getNextIntegerId());
+		
+		boardExDAO.insertBoard(board);
 	}
 
 }

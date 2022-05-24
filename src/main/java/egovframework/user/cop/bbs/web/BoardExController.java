@@ -1,14 +1,21 @@
 package egovframework.user.cop.bbs.web;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import egovframework.com.cmm.service.EgovFileMngService;
+import egovframework.com.cmm.service.EgovFileMngUtil;
+import egovframework.com.cmm.service.FileVO;
 import egovframework.com.cop.bbs.service.BoardVO;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
@@ -23,6 +30,37 @@ public class BoardExController {
 
 	@Resource(name = "propertiesService")
 	protected EgovPropertyService propertyService;
+
+	@Resource(name = "EgovFileMngUtil")
+	private EgovFileMngUtil fileUtil;
+
+	@Resource(name = "EgovFileMngService")
+	private EgovFileMngService fileMngService;
+
+	protected String unscript(String data) {
+		if (data == null || data.trim().equals("")) {
+			return "";
+		}
+
+		String ret = data;
+
+		ret = ret.replaceAll("<(S|s)(C|c)(R|r)(I|i)(P|p)(T|t)", "&lt;script");
+		ret = ret.replaceAll("</(S|s)(C|c)(R|r)(I|i)(P|p)(T|t)", "&lt;/script");
+
+		ret = ret.replaceAll("<(O|o)(B|b)(J|j)(E|e)(C|c)(T|t)", "&lt;object");
+		ret = ret.replaceAll("</(O|o)(B|b)(J|j)(E|e)(C|c)(T|t)", "&lt;/object");
+
+		ret = ret.replaceAll("<(A|a)(P|p)(P|p)(L|l)(E|e)(T|t)", "&lt;applet");
+		ret = ret.replaceAll("</(A|a)(P|p)(P|p)(L|l)(E|e)(T|t)", "&lt;/applet");
+
+		ret = ret.replaceAll("<(E|e)(M|m)(B|b)(E|e)(D|d)", "&lt;embed");
+		ret = ret.replaceAll("</(E|e)(M|m)(B|b)(E|e)(D|d)", "&lt;embed");
+
+		ret = ret.replaceAll("<(F|f)(O|o)(R|r)(M|m)", "&lt;form");
+		ret = ret.replaceAll("</(F|f)(O|o)(R|r)(M|m)", "&lt;form");
+
+		return ret;
+	}
 
 	@RequestMapping("/selectBoardList.do")
 	public String selectBoardList(@ModelAttribute("serachVO") BoardVO boardVO, ModelMap model) throws Exception {
@@ -62,5 +100,32 @@ public class BoardExController {
 		BoardVO vo = boardExService.selectBoardDetail(boardVO);
 		model.addAttribute("result", vo);
 		return "egovframework/user/cop/bbs/BBSBoardDetail";
+	}
+
+	@RequestMapping("/insertBoardView.do")
+	public String insertBoardView(@ModelAttribute("searchVO") BoardVO boardVO, ModelMap model) throws Exception {
+		model.addAttribute("articleVO", boardVO);
+
+		return "egovframework/user/cop/bbs/BBSBoardRegist";
+	}
+
+	@RequestMapping("/insertBoard.do")
+	public String insertBoard(final MultipartHttpServletRequest multiRequest, 
+			@ModelAttribute("searchVO") BoardVO boardVO, @ModelAttribute("board") BoardVO board,
+			BindingResult bindingResult, ModelMap model) throws Exception {
+		List<FileVO> result = null;
+		String atchFileId = "";
+
+		final List<MultipartFile> files = multiRequest.getFiles("file_1");
+		if (!files.isEmpty()) {
+			result = fileUtil.parseFileInf(files, "BBS_", 0, "", "");
+			atchFileId = fileMngService.insertFileInfs(result);
+		}
+		board.setAtchFileId(atchFileId);
+		board.setFrstRegisterId("usertest");
+		board.setNttCn(unscript(board.getNttCn()));
+		boardExService.insertBoard(board);
+		
+		return "forward:/user/cop/bbs/selectBoardList.do";
 	}
 }

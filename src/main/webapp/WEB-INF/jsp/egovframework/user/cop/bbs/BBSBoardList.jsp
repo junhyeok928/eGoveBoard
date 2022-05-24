@@ -140,7 +140,7 @@
 							title="<spring:message code="title.inquire" /> <spring:message code="input.button" />"
 						/>
 						<!-- 조회 --> <c:if test="${preview != 'true'}">
-							<span class="btn_b"><a href="<c:url value='user/cop/bbs/insertBoardView.do' />"
+							<span class="btn_b"><a href="<c:url value='/user/cop/bbs/insertBoardView.do' />"
 								title="<spring:message code="button.create" /> <spring:message code="input.button" />"
 							><spring:message code="button.create" /></a></span>
 							<!-- 등록 -->
