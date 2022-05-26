@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import egovframework.com.cmm.service.EgovFileMngService;
+import egovframework.com.cmm.service.FileVO;
 import egovframework.com.cop.bbs.service.Board;
 import egovframework.com.cop.bbs.service.BoardVO;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
@@ -26,6 +28,9 @@ public class BoardExServiceImpl extends EgovAbstractServiceImpl implements Board
 
 	@Resource(name = "egovNttIdGnrService")
     private EgovIdGnrService nttIdgenService;
+	
+	@Resource(name = "EgovFileMngService")
+    private EgovFileMngService fileService;
 	
 	@Override
 	public Map<String, Object> selectBoardList(BoardVO boardVO) {
@@ -51,21 +56,38 @@ public class BoardExServiceImpl extends EgovAbstractServiceImpl implements Board
 	
 	@Override
 	public void insertBoard(Board board) throws FdlException{
-//		if ("Y".equals(board.getReplyAt())) {
-//			board.setNttId(nttIdgenService.getNextIntegerId());
-//			BoardExDAO.replyArticle(board);
-//		}
-		board.setParnts("0");
-		board.setReplyLc("0");
-		board.setReplyAt("N");
-		board.setNttId(nttIdgenService.getNextIntegerId());
-		
-		boardExDAO.insertBoard(board);
+		if ("Y".equals(board.getReplyAt())) {
+			board.setNttId(nttIdgenService.getNextIntegerId());
+			boardExDAO.replyBoard(board);
+		} else {
+			board.setParnts("0");
+			board.setReplyLc("0");
+			board.setReplyAt("N");
+			board.setNttId(nttIdgenService.getNextIntegerId());
+			
+			boardExDAO.insertBoard(board);
+		}
+
 	}
 	
 	@Override
 	public void updateBoard(Board board) {
 		boardExDAO.updateBoard(board);
+	}
+	
+	@Override
+	public void deleteBoard(Board board) throws Exception{
+		FileVO fvo = new FileVO();
+		
+		fvo.setAtchFileId(board.getAtchFileId());
+		
+		board.setNttSj("이 글은 작성자에 의해서 삭제되었습니다.");
+		
+		boardExDAO.deleteBoard(board);
+		
+		if (!"".equals(fvo.getAtchFileId()) || fvo.getAtchFileId() != null) {
+		    fileService.deleteAllFileInf(fvo);
+		}
 	}
 
 }

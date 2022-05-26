@@ -14,4 +14,6 @@ public interface BoardExService {
 	void insertBoard(Board board) throws FdlException;
 	
 	void updateBoard(Board board) throws Exception;
+	
+	void deleteBoard(Board board) throws Exception;
 }

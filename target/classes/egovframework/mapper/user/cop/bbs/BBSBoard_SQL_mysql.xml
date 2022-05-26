@@ -267,18 +267,51 @@
 			 )		
 
 	</insert>
+	<insert id="replyBoard" parameterType="egovframework.com.cop.bbs.service.BoardVO">
+		<selectKey keyProperty="nttNo" resultType="java.lang.Long" order="BEFORE">
+			SELECT IFNULL(MAX(NTT_NO),0)+1 AS NTT_NO  FROM COMTNBBS
+			WHERE SORT_ORDR = #{sortOrdr}
+		</selectKey>			
+		
+			INSERT INTO USERTNBBS
+			(NTT_ID, NTT_SJ, NTT_CN, SORT_ORDR, 
+			 NTCR_ID, NTCR_NM, RDCNT, 
+			 NTCE_BGNDE, NTCE_ENDDE, ANSWER_AT,  			   
+			 PARNTSCTT_NO, NTT_NO, ANSWER_LC, ATCH_FILE_ID,
+			 FRST_REGISTER_ID, FRST_REGIST_PNTTM, USE_AT,
+			 NOTICE_AT
+			 )
+			VALUES
+			( #{nttId}, #{nttSj}, #{nttCn}, #{sortOrdr}, 
+			  #{ntcrId}, #{ntcrNm}, #{inqireCo}, 
+			  #{ntceBgnde}, #{ntceEndde}, #{replyAt}, 
+			  #{parnts}, #{nttNo}, #{replyLc}, #{atchFileId},
+			  #{frstRegisterId}, SYSDATE(), 'Y',
+			  #{noticeAt}
+			 )			
+		
+	</insert>
  	<update id="updateBoard" parameterType="egovframework.com.cop.bbs.service.BoardVO">
+
+	UPDATE USERTNBBS SET
+	NTT_SJ = #{nttSj},
+	NTT_CN = #{nttCn},
+	NTCE_BGNDE = #{ntceBgnde},
+	NTCE_ENDDE = #{ntceEndde},
+	LAST_UPDUSR_ID = #{lastUpdusrId},
+	ATCH_FILE_ID = #{atchFileId},
+	LAST_UPDT_PNTTM = SYSDATE(),
+	NOTICE_AT = #{noticeAt}
+	WHERE NTT_ID = #{nttId}
  		
-			UPDATE USERTNBBS SET 
-				NTT_SJ = #{nttSj},
-				NTT_CN = #{nttCn}, 
-				NTCE_BGNDE = #{ntceBgnde},		
-				NTCE_ENDDE = #{ntceEndde},
-				LAST_UPDUSR_ID = #{lastUpdusrId},
-				ATCH_FILE_ID = #{atchFileId},
-				LAST_UPDT_PNTTM = SYSDATE(),
-				NOTICE_AT = #{noticeAt}
-			WHERE NTT_ID = #{nttId}
+ 	</update>
+ 	<update id = "deleteBoard" parameterType="egovframework.com.cop.bbs.service.BoardVO">
+ 		UPDATE USERTNBBS SET
+ 			NTT_SJ = #{nttSj},
+ 			USE_AT = 'N',
+ 			LAST_UPDUSR_ID = #{lastUpdusrId},
+ 			LAST_UPDT_PNTTM = SYSDATE()
+ 		WHERE NTT_ID = #{nttId}
  		
  	</update>
 </mapper>

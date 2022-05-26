@@ -186,8 +186,6 @@ function fn_egov_inqire_articlelist() {
 						<c:set var="title"><spring:message code="comCopBbs.articleVO.updt.sjBoldAt" /></c:set>
 						<th><label for="sjBoldAt">${title}</label></th>
 						<td class="left">
-							<form:checkbox path="sjBoldAt" value="Y" />
-							<div>	<form:errors path="sjBoldAt" cssClass="error" /></div>
 						</td>
 					</tr>
 
@@ -209,16 +207,6 @@ function fn_egov_inqire_articlelist() {
 						<td class="left" colspan="3">
 							<form:checkbox path="noticeAt"	value="Y" />
 							<div>	<form:errors path="noticeAt" cssClass="error" /></div>
-						</td>
-					</tr>
-
-					<!-- 비밀글 여부 -->
-					<c:set var="title"><spring:message code="comCopBbs.articleVO.updt.secretAt" /></c:set>
-					<tr>
-						<th><label for="secretAt">${title}</label></th>
-						<td class="left" colspan="3">
-							<form:checkbox path="secretAt"	value="Y" />
-							<div>	<form:errors path="secretAt" cssClass="error" /></div>
 						</td>
 					</tr>
 
@@ -264,21 +252,14 @@ function fn_egov_inqire_articlelist() {
 			<!-- 하단 버튼 -->
 			<div class="btn">
 				<input type="submit" class="s_submit" value="<spring:message code="button.update" />" title="<spring:message code="button.update" /> <spring:message code="input.button" />" /><!-- 수정 -->
-				<span class="btn_s"><a href="<c:url value='/cop/bbs/selectArticleList.do' />?bbsId=${boardMasterVO.bbsId}"  title="<spring:message code="button.list" /> <spring:message code="input.button" />"><spring:message code="button.list" /></a></span><!-- 목록 -->
+				<span class="btn_s"><a href="<c:url value='/user/cop/bbs/selectBoardList.do' />" title="<spring:message code="button.list" /> <spring:message code="input.button" />"><spring:message code="button.list" /></a></span><!-- 목록 -->
 			</div>
 			<div style="clear: both;"></div>
 
 		</div>
 
 		<input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>" />
-		<input type="hidden" name="bbsTyCode" value="<c:out value='${boardMasterVO.bbsTyCode}'/>" />
-		<input type="hidden" name="replyPosblAt"	value="<c:out value='${boardMasterVO.replyPosblAt}'/>" />
-		<input type="hidden" name="fileAtchPosblAt"	value="<c:out value='${boardMasterVO.fileAtchPosblAt}'/>" />
-		<input type="hidden" id="atchPosblFileNumber" name="atchPosblFileNumber" value="<c:out value='${boardMasterVO.atchPosblFileNumber}'/>" />
-		<input type="hidden" name="atchPosblFileSize" value="<c:out value='${boardMasterVO.atchPosblFileSize}'/>" />
-		<input type="hidden" name="tmplatId" value="<c:out value='${boardMasterVO.tmplatId}'/>" />
 		<input name="nttId" type="hidden" value="${articleVO.nttId}">
-		<input name="bbsId" type="hidden" value="${boardMasterVO.bbsId}">
 	</form:form>
 
 <!-- 첨부파일 업로드 가능화일 설정 Start..-->  

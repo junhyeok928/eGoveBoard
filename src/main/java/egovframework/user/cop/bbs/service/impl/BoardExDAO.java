@@ -37,4 +37,10 @@ public class BoardExDAO extends EgovComAbstractDAO {
 	public void updateBoard(Board board) {
 		update("BBSBoard.updateBoard", board);
 	}
+	public void deleteBoard(Board board) {
+		update("BBSBoard.deleteBoard", board);
+	}
+	public void replyBoard(Board board) {
+		insert("BBSBoard.replyBoard", board);
+	}
 }

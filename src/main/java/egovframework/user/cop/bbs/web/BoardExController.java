@@ -1,24 +1,34 @@
 package egovframework.user.cop.bbs.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.service.EgovFileMngService;
 import egovframework.com.cmm.service.EgovFileMngUtil;
 import egovframework.com.cmm.service.FileVO;
+import egovframework.com.cmm.util.EgovUserDetailsHelper;
+import egovframework.com.cop.bbs.service.Board;
 import egovframework.com.cop.bbs.service.BoardVO;
+import egovframework.com.cop.cmt.service.Comment;
+import egovframework.com.cop.cmt.service.CommentVO;
+import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import egovframework.user.cop.bbs.service.BoardCommentService;
 import egovframework.user.cop.bbs.service.BoardExService;
 
 @Controller
@@ -36,7 +46,11 @@ public class BoardExController {
 
 	@Resource(name = "EgovFileMngService")
 	private EgovFileMngService fileMngService;
+	
+	@Resource(name = "BoardCommentService")
+	private BoardCommentService boardCommentService;
 
+	// XSS 방지
 	protected String unscript(String data) {
 		if (data == null || data.trim().equals("")) {
 			return "";
@@ -62,6 +76,7 @@ public class BoardExController {
 		return ret;
 	}
 
+	// 게시판 목록 조회
 	@RequestMapping("/selectBoardList.do")
 	public String selectBoardList(@ModelAttribute("serachVO") BoardVO boardVO, ModelMap model) throws Exception {
 
@@ -95,6 +110,7 @@ public class BoardExController {
 		return "egovframework/user/cop/bbs/BBSBoardList";
 	}
 
+	// 게시글 디테일
 	@RequestMapping("/selectBoardDetail.do")
 	public String selectBoardDetail(@ModelAttribute("searchVO") BoardVO boardVO, ModelMap model) throws Exception {
 		BoardVO vo = boardExService.selectBoardDetail(boardVO);
@@ -102,6 +118,7 @@ public class BoardExController {
 		return "egovframework/user/cop/bbs/BBSBoardDetail";
 	}
 
+	// 게시글 작성 뷰
 	@RequestMapping("/insertBoardView.do")
 	public String insertBoardView(@ModelAttribute("searchVO") BoardVO boardVO, ModelMap model) throws Exception {
 		model.addAttribute("articleVO", boardVO);
@@ -109,10 +126,13 @@ public class BoardExController {
 		return "egovframework/user/cop/bbs/BBSBoardRegist";
 	}
 
+	// 게시글 작성
 	@RequestMapping("/insertBoard.do")
-	public String insertBoard(final MultipartHttpServletRequest multiRequest, 
+	public String insertBoard(final MultipartHttpServletRequest multiRequest,
 			@ModelAttribute("searchVO") BoardVO boardVO, @ModelAttribute("board") BoardVO board,
 			BindingResult bindingResult, ModelMap model) throws Exception {
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+
 		List<FileVO> result = null;
 		String atchFileId = "";
 
@@ -121,21 +141,27 @@ public class BoardExController {
 			result = fileUtil.parseFileInf(files, "BBS_", 0, "", "");
 			atchFileId = fileMngService.insertFileInfs(result);
 		}
+		board.setNtcrId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+		board.setNtcrNm((user == null || user.getName() == null) ? "" : user.getName());
 		board.setAtchFileId(atchFileId);
 		board.setFrstRegisterId("usertest");
 		board.setNttCn(unscript(board.getNttCn()));
 		boardExService.insertBoard(board);
-		
+
 		return "forward:/user/cop/bbs/selectBoardList.do";
 	}
+
+	// 게시글 수정 뷰
 	@RequestMapping("/updateBoardView.do")
 	public String updateArticleView(@ModelAttribute("searchVO") BoardVO boardVO, @ModelAttribute("board") BoardVO vo,
 			ModelMap model) throws Exception {
 		BoardVO bdvo = new BoardVO();
+		bdvo = boardExService.selectBoardDetail(boardVO);
 		model.addAttribute("articleVO", bdvo);
 		return "egovframework/user/cop/bbs/BBSBoardUpdt";
 	}
-	
+
+	// 게시글 수정
 	@RequestMapping("/updateBoard.do")
 	public String updateBoard(final MultipartHttpServletRequest multiRequest,
 			@ModelAttribute("searchVO") BoardVO boardVO, @ModelAttribute("board") BoardVO board,
@@ -143,7 +169,7 @@ public class BoardExController {
 		String atchFileId = boardVO.getAtchFileId();
 		final List<MultipartFile> files = multiRequest.getFiles("file_1");
 		if (!files.isEmpty()) {
-			if( atchFileId == null || "".equals(atchFileId)) {
+			if (atchFileId == null || "".equals(atchFileId)) {
 				List<FileVO> result = fileUtil.parseFileInf(files, "BBS_", 0, atchFileId, "");
 				atchFileId = fileMngService.insertFileInfs(result);
 				board.setAtchFileId(atchFileId);
@@ -156,7 +182,67 @@ public class BoardExController {
 			}
 		}
 		boardExService.updateBoard(board);
-		
+
 		return "forward:/user/cop/bbs/selectBoardList.do";
+	}
+
+	// 게시글 삭제
+	@RequestMapping("/deleteBoard")
+	public String deleteBoard(HttpServletRequest request, @ModelAttribute("searchVO") BoardVO boardVO,
+			@ModelAttribute("board") Board board, ModelMap model) throws Exception {
+		boardExService.deleteBoard(board);
+		return "forward:/user/cop/bbs/selectBoardList.do";
+	}
+
+	// 답글 등록 뷰
+	@RequestMapping("/replyBoardView.do")
+	public String addReplyBoard(@ModelAttribute("searchVO") BoardVO boardVO, ModelMap model) throws Exception {
+
+		BoardVO articleVO = new BoardVO();
+		boardVO = boardExService.selectBoardDetail(boardVO);
+		model.addAttribute("result", boardVO);
+		model.addAttribute("articleVO", articleVO);
+		return "egovframework/user/cop/bbs/BBSBoardReply";
+	}
+
+	// 답글 등록
+	@RequestMapping("/replyBoard.do")
+	public String replyBoard(final MultipartHttpServletRequest multiRequest,
+			@ModelAttribute("searchVO") BoardVO boardVO, @ModelAttribute("board") BoardVO board,
+			BindingResult bindingResult, ModelMap model) throws Exception {
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+		final List<MultipartFile> files = multiRequest.getFiles("file_1");
+		String atchFileId = "";
+
+		if (!files.isEmpty()) {
+			List<FileVO> result = fileUtil.parseFileInf(files, "BBS_", 0, "", "");
+			atchFileId = fileMngService.insertFileInfs(result);
+		}
+		board.setAtchFileId(atchFileId);
+		board.setReplyAt("Y");
+		board.setParnts(Long.toString(boardVO.getNttId()));
+		board.setSortOrdr(boardVO.getSortOrdr());
+		board.setReplyLc(Integer.toString(Integer.parseInt(boardVO.getReplyLc()) + 1));
+		board.setNtcrId((user == null || user.getId() == null) ? "" : user.getId());
+		board.setNtcrNm((user == null || user.getName() == null) ? "" : user.getName());
+
+		board.setNttCn(unscript(board.getNttCn()));
+		boardExService.insertBoard(board);
+		return "forward:/user/cop/bbs/selectBoardList.do";
+	}
+	
+	// 댓글 등록
+	@RequestMapping("/insertBoardComment.do")
+	public String insertBoardComment(@ModelAttribute("searchVO") CommentVO commentVO, @ModelAttribute("comment") Comment comment,
+			BindingResult bindingResult, ModelMap model, @RequestParam HashMap<String, String> map) throws Exception{
+		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		comment.setFrstRegisterId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+		comment.setWrterId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+	    comment.setWrterNm(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
+	    boardCommentService.insertBoardComment(comment);
+	    
+	    commentVO.setCommentCn("");
+	    commentVO.setCommentNo("");
+		return "forward:/user/cop/bbs/selectBoardDetail.do";
 	}
 }
