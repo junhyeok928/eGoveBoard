@@ -7,14 +7,18 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.antlr.grammar.v3.ANTLRParser.exceptionGroup_return;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.service.EgovFileMngService;
@@ -46,7 +50,7 @@ public class BoardExController {
 
 	@Resource(name = "EgovFileMngService")
 	private EgovFileMngService fileMngService;
-	
+
 	@Resource(name = "BoardCommentService")
 	private BoardCommentService boardCommentService;
 
@@ -111,11 +115,144 @@ public class BoardExController {
 	}
 
 	// 게시글 디테일
-	@RequestMapping("/selectBoardDetail.do")
-	public String selectBoardDetail(@ModelAttribute("searchVO") BoardVO boardVO, ModelMap model) throws Exception {
-		BoardVO vo = boardExService.selectBoardDetail(boardVO);
+	@GetMapping("/selectBoardDetail.do")
+	public String selectBoardDetail(HttpServletRequest request, @ModelAttribute("searchVO1") BoardVO boardVO,
+			@ModelAttribute("searchVO") CommentVO commentVO, ModelMap model) throws Exception {
+		BoardVO vo = null;
+		CommentVO cvo = null;
+		if (RequestContextUtils.getInputFlashMap(request) == null) {
+			vo = boardExService.selectBoardDetail(boardVO);
+			cvo = commentVO;
+		} else {
+			System.out.println(RequestContextUtils.getInputFlashMap(request));
+			Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+			BoardVO revo = (BoardVO) flashMap.get("boardVO");
+			CommentVO covo = (CommentVO) flashMap.get("commentVO");
+			vo = boardExService.selectBoardDetail(revo);
+			cvo = covo;
+		}
+
+		CommentVO articleCommentVO = new CommentVO();
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+
+		if (cvo.isModified()) {
+			cvo.setCommentNo("");
+			cvo.setCommentCn("");
+		}
+		model.addAttribute("sessionUniqId", user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+
+		cvo.setWrterNm(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
+
+//		commentVO.setSubPageUnit(propertyService.getInt("pageUnit"));
+//		commentVO.setSubPageSize(propertyService.getInt("pageSize"));
+
+		PaginationInfo paginationInfo = new PaginationInfo();
+		paginationInfo.setCurrentPageNo(cvo.getSubPageIndex());
+		paginationInfo.setRecordCountPerPage(cvo.getSubPageUnit());
+		paginationInfo.setPageSize(cvo.getSubPageSize());
+
+		cvo.setSubFirstIndex(paginationInfo.getFirstRecordIndex());
+		cvo.setSubLastIndex(paginationInfo.getLastRecordIndex());
+		cvo.setSubRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+
+		Map<String, Object> map = boardCommentService.selectBoardCommentList(cvo);
+		int totCnt = Integer.parseInt((String) map.get("resultCnt"));
+
+		paginationInfo.setTotalRecordCount(totCnt);
+
+		model.addAttribute("resultList", map.get("resultList"));
+		model.addAttribute("resultCnt", map.get("resultCnt"));
+		model.addAttribute("paginationInfo", paginationInfo);
+		model.addAttribute("type", "body"); // 댓글 페이지 body import용
+
+		model.addAttribute("articleCommentVO", articleCommentVO); // validator 용도
+
+		cvo.setCommentCn(""); // 등록 후 댓글 내용 처리
+
 		model.addAttribute("result", vo);
 		return "egovframework/user/cop/bbs/BBSBoardDetail";
+	}
+
+	// 댓글 등록
+	@RequestMapping("/insertBoardComment.do")
+	public String insertBoardComment(@ModelAttribute("searchVO") CommentVO commentVO,
+			@ModelAttribute("comment") Comment comment, @ModelAttribute BoardVO boardVO, BindingResult bindingResult,
+			ModelMap model, @RequestParam HashMap<String, String> map, RedirectAttributes re) throws Exception {
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+		comment.setFrstRegisterId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+		comment.setWrterId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+		comment.setWrterNm(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
+
+		boardCommentService.insertBoardComment(comment);
+		commentVO.setCommentCn("");
+		commentVO.setCommentNo("");
+
+		return "redirect:/user/cop/bbs/selectBoardDetail.do?nttId=" + boardVO.getNttId();
+	}
+
+	// 댓글 삭제
+	@RequestMapping("/deleteBoardComment.do")
+	public String deleteBoardComment(@ModelAttribute("searchVO") CommentVO commentVO,
+			@ModelAttribute("comment") Comment comment, ModelMap model, @RequestParam HashMap<String, String> map)
+			throws Exception {
+		@SuppressWarnings("unused")
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+		boardCommentService.deleteBoardComment(commentVO);
+		commentVO.setCommentCn("");
+		commentVO.setCommentNo("");
+		return "redirect:/user/cop/bbs/selectBoardDetail.do?nttId=" + commentVO.getNttId();
+	}
+
+	// 댓글 수정 뷰
+	@RequestMapping("/updateBoardCommentView.do")
+	public String updateBoardCommentView(@ModelAttribute("searchVO") CommentVO commentVO, ModelMap model)
+			throws Exception {
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+		CommentVO articleCommentVO = new CommentVO();
+
+		commentVO.setWrterNm(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
+
+		commentVO.setSubPageUnit(propertyService.getInt("pageUnit"));
+		commentVO.setSubPageSize(propertyService.getInt("pageSize"));
+
+		PaginationInfo paginationInfo = new PaginationInfo();
+		paginationInfo.setCurrentPageNo(commentVO.getSubPageIndex());
+		paginationInfo.setRecordCountPerPage(commentVO.getSubPageUnit());
+		paginationInfo.setPageSize(commentVO.getSubPageSize());
+
+		commentVO.setSubFirstIndex(paginationInfo.getFirstRecordIndex());
+		commentVO.setSubLastIndex(paginationInfo.getLastRecordIndex());
+		commentVO.setSubRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+
+		Map<String, Object> map = boardCommentService.selectBoardCommentList(commentVO);
+		int totCnt = Integer.parseInt((String) map.get("resultCnt"));
+
+		paginationInfo.setTotalRecordCount(totCnt);
+
+		model.addAttribute("resultList", map.get("resultList"));
+		model.addAttribute("resultCnt", map.get("resultCnt"));
+		model.addAttribute("paginationInfo", paginationInfo);
+		model.addAttribute("type", "body"); // body import
+
+		articleCommentVO = boardCommentService.selectBoardCommentDetail(commentVO);
+		model.addAttribute("articleCommentVO", articleCommentVO);
+		return "egovframework/com/cop/bbs/BBSBoardCommentList";
+	}
+
+	// 댓글 수정
+	@RequestMapping("/updateBoardComment.do")
+	public String updateArticleComment(@ModelAttribute("searchVO") CommentVO commentVO,
+			@ModelAttribute("comment") Comment comment, BindingResult bindingResult, ModelMap model) throws Exception {
+
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+		comment.setLastUpdusrId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+
+		boardCommentService.updateBoardComment(comment);
+
+		commentVO.setCommentCn("");
+		commentVO.setCommentNo("");
+
+		return "forward:/user/cop/bbs/selectBoardDetail.do";
 	}
 
 	// 게시글 작성 뷰
@@ -148,7 +285,7 @@ public class BoardExController {
 		board.setNttCn(unscript(board.getNttCn()));
 		boardExService.insertBoard(board);
 
-		return "forward:/user/cop/bbs/selectBoardList.do";
+		return "redirect:/user/cop/bbs/selectBoardList.do";
 	}
 
 	// 게시글 수정 뷰
@@ -183,7 +320,7 @@ public class BoardExController {
 		}
 		boardExService.updateBoard(board);
 
-		return "forward:/user/cop/bbs/selectBoardList.do";
+		return "redirect:/user/cop/bbs/selectBoardList.do";
 	}
 
 	// 게시글 삭제
@@ -191,7 +328,7 @@ public class BoardExController {
 	public String deleteBoard(HttpServletRequest request, @ModelAttribute("searchVO") BoardVO boardVO,
 			@ModelAttribute("board") Board board, ModelMap model) throws Exception {
 		boardExService.deleteBoard(board);
-		return "forward:/user/cop/bbs/selectBoardList.do";
+		return "redirect:/user/cop/bbs/selectBoardList.do";
 	}
 
 	// 답글 등록 뷰
@@ -228,21 +365,7 @@ public class BoardExController {
 
 		board.setNttCn(unscript(board.getNttCn()));
 		boardExService.insertBoard(board);
-		return "forward:/user/cop/bbs/selectBoardList.do";
+		return "redirect:/user/cop/bbs/selectBoardList.do";
 	}
-	
-	// 댓글 등록
-	@RequestMapping("/insertBoardComment.do")
-	public String insertBoardComment(@ModelAttribute("searchVO") CommentVO commentVO, @ModelAttribute("comment") Comment comment,
-			BindingResult bindingResult, ModelMap model, @RequestParam HashMap<String, String> map) throws Exception{
-		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-		comment.setFrstRegisterId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
-		comment.setWrterId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
-	    comment.setWrterNm(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
-	    boardCommentService.insertBoardComment(comment);
-	    
-	    commentVO.setCommentCn("");
-	    commentVO.setCommentNo("");
-		return "forward:/user/cop/bbs/selectBoardDetail.do";
-	}
+
 }

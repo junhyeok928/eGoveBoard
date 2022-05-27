@@ -65,12 +65,8 @@
 
 		var form = document.getElementById("articleCommentVO");
 
-		if (!validateArticleCommentVO(form)) {
-			return;
-		}
-		if (confirm('<spring:message code="common.regist.msg" />')) {
-			form.submit();
-		}
+		form.submit();
+
 	}
 
 	function fn_egov_updt_commentList() {
@@ -83,7 +79,7 @@
 
 		if (confirm('<spring:message code="common.update.msg" />')) {
 			form.modified.value = "true";
-			form.action = "<c:url value='/cop/cmt/updateArticleComment.do'/>";
+			form.action = "<c:url value='/user/cop/bbs/updateBoardCommentView.do'/>";
 			form.submit();
 		}
 	}
@@ -93,7 +89,7 @@
 		var form = document.getElementById("articleCommentVO");
 
 		form.commentNo.value = commentNo;
-		form.action = "<c:url value='/user/cop/bbs/selectBoardDetail.do'/>";
+		form.action = "<c:url value='/user/cop/bbs/updateBoardCommentView.do'/>";
 		form.submit();
 	}
 
@@ -104,7 +100,7 @@
 		if (confirm('<spring:message code="common.delete.msg" />')) {
 			form.modified.value = "true";
 			form.commentNo.value = commentNo;
-			form.action = "<c:url value='/cop/cmt/deleteArticleComment.do'/>";
+			form.action = "<c:url value='/user/cop/bbs/deleteBoardComment.do'/>";
 			form.submit();
 		}
 	}
@@ -117,6 +113,7 @@
 		form.subPageIndex.value = pageNo;
 		form.commentNo.value = '';
 		form.action = "<c:url value='/user/cop/bbs/selectBoardDetail.do'/>";
+		form.method = "get";
 		form.submit();
 	}
 </script>
@@ -306,7 +303,7 @@
 		</ul>
 	</div>
 
- 	<!-- paging navigation -->
+	<!-- paging navigation -->
 	<div class="paging">
 		<ul>
 			<ui:pagination paginationInfo="${paginationInfo}" type="image"
@@ -316,7 +313,7 @@
 	</div>
 
 	<form:form commandName="articleCommentVO"
-		action="${pageContext.request.contextPath}/cop/cmt/insertArticleComment.do" method="post"
+		action="${pageContext.request.contextPath}/user/cop/bbs/insertBoardComment.do" method="post"
 		onSubmit="fn_egov_insert_commentList(); return false;" style="float:left; clear:both;"
 	>
 		<div class="wTableFrm">
@@ -347,15 +344,13 @@
 									<span style="float: left;"><a href="javascript:fn_egov_insert_commentList(); "
 										class="btn_s re_btn"
 										title="<spring:message code="button.comment" /> <spring:message code="input.button" />"
-									><spring:message code="button.comment" />
-											<spring:message code="button.create" /></a></span>
+									><spring:message code="button.comment" /> <spring:message code="button.create" /></a></span>
 								</c:when>
 								<c:otherwise>
 									<span style="float: left;"><a href="javascript:fn_egov_updt_commentList(); "
 										class="btn_s re_btn"
 										title="<spring:message code="button.update" /> <spring:message code="input.button" />"
-									><spring:message code="button.comment" />
-											<spring:message code="button.update" /></a></span>
+									><spring:message code="button.comment" /> <spring:message code="button.update" /></a></span>
 								</c:otherwise>
 							</c:choose>
 						</td>

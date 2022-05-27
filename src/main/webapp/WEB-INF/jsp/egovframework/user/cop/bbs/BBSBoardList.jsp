@@ -187,7 +187,7 @@
 							<img src="<c:url value='/images/egovframework/com/cop/bbs/icon_notice.png'/>" alt="notice">
 						</td>
 						<td class="bold">
-							<form name="subForm" method="post"
+							<form name="subForm" method="get"
 								action="<c:url value='/user/cop/bbs/selectBoardDetail.do'/>"
 							>
 								<input name="nttId" type="hidden" value="<c:out value="${noticeInfo.nttId}"/>">
@@ -252,7 +252,7 @@
 												></span>
 										</c:when>
 										<c:otherwise>
-											<form name="subForm" method="post"
+											<form name="subForm" method="get"
 												action="<c:url value='/user/cop/bbs/selectBoardDetail.do'/>">
 												<input name="nttId" type="hidden" value="<c:out value="${resultInfo.nttId}"/>">
 <%-- 												<input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>" /> --%>
