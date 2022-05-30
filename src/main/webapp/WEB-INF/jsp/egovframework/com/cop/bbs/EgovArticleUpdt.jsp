@@ -196,8 +196,7 @@ function fn_egov_inqire_articlelist() {
 					<tr>
 						<th><label for="nttCn">${title}<span class="pilsu">*</span></label></th>
 						<td class="nopd" colspan="3">
-							<form:textarea path="nttCn" title="${title} ${inputTxt}" cols="300" rows="20" />
-							
+							<form:textarea path="nttCn" title="${title} ${inputTxt}" cols="300" rows="20" />			
 							<div>	<form:errors path="nttCn" cssClass="error" /></div>
 						</td>
 					</tr>

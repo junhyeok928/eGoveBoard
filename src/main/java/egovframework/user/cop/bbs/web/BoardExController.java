@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.antlr.grammar.v3.ANTLRParser.exceptionGroup_return;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -205,11 +205,13 @@ public class BoardExController {
 
 	// 댓글 수정 뷰
 	@RequestMapping("/updateBoardCommentView.do")
-	public String updateBoardCommentView(@ModelAttribute("searchVO") CommentVO commentVO, ModelMap model)
+	public String updateBoardCommentView(@ModelAttribute("searchVO") CommentVO commentVO, ModelMap model, @ModelAttribute("searchVO1") BoardVO boardVO)
 			throws Exception {
 		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 		CommentVO articleCommentVO = new CommentVO();
-
+		
+		BoardVO vo = boardExService.selectBoardDetail(boardVO);
+		
 		commentVO.setWrterNm(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
 
 		commentVO.setSubPageUnit(propertyService.getInt("pageUnit"));
@@ -233,10 +235,11 @@ public class BoardExController {
 		model.addAttribute("resultCnt", map.get("resultCnt"));
 		model.addAttribute("paginationInfo", paginationInfo);
 		model.addAttribute("type", "body"); // body import
-
+		model.addAttribute("articleCommentVO", articleCommentVO); // validator 용도
 		articleCommentVO = boardCommentService.selectBoardCommentDetail(commentVO);
 		model.addAttribute("articleCommentVO", articleCommentVO);
-		return "egovframework/com/cop/bbs/BBSBoardCommentList";
+		model.addAttribute("result", vo);
+		return "egovframework/user/cop/bbs/BBSBoardCommentList";
 	}
 
 	// 댓글 수정
@@ -252,7 +255,7 @@ public class BoardExController {
 		commentVO.setCommentCn("");
 		commentVO.setCommentNo("");
 
-		return "forward:/user/cop/bbs/selectBoardDetail.do";
+		return "redirect:/user/cop/bbs/selectBoardDetail.do?nttId=" + commentVO.getNttId();
 	}
 
 	// 게시글 작성 뷰
@@ -282,6 +285,7 @@ public class BoardExController {
 		board.setNtcrNm((user == null || user.getName() == null) ? "" : user.getName());
 		board.setAtchFileId(atchFileId);
 		board.setFrstRegisterId("usertest");
+		board.setNttCn(StringEscapeUtils.unescapeHtml(board.getNttCn()));
 		board.setNttCn(unscript(board.getNttCn()));
 		boardExService.insertBoard(board);
 
@@ -295,6 +299,7 @@ public class BoardExController {
 		BoardVO bdvo = new BoardVO();
 		bdvo = boardExService.selectBoardDetail(boardVO);
 		model.addAttribute("articleVO", bdvo);
+//		StringEscapeUtils.unescapeHtml(bdvo.getNttCn()) ;
 		return "egovframework/user/cop/bbs/BBSBoardUpdt";
 	}
 
@@ -318,6 +323,8 @@ public class BoardExController {
 				fileMngService.updateFileInfs(_result);
 			}
 		}
+		board.setNttCn(StringEscapeUtils.unescapeHtml(board.getNttCn()));
+		board.setNttCn(unscript(board.getNttCn()));
 		boardExService.updateBoard(board);
 
 		return "redirect:/user/cop/bbs/selectBoardList.do";

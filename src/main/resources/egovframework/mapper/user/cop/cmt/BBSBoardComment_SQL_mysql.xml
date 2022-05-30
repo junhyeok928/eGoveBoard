@@ -102,7 +102,7 @@
 		WHERE ANSWER_NO = #{commentNo}
 	</update>
 	
-	<select id="selectArticleCommentDetail" parameterType="egovframework.com.cop.cmt.service.CommentVO" resultMap="commentDetail">
+	<select id="selectBoardCommentDetail" parameterType="egovframework.com.cop.cmt.service.CommentVO" resultMap="commentDetail">
 	SELECT
 	a.ANSWER_NO, a.NTT_ID,
 	a.WRTER_ID, a.WRTER_NM, a.PASSWORD, a.ANSWER, a.USE_AT,

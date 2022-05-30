@@ -73,7 +73,7 @@
 
 		var form = document.getElementById("articleCommentVO");
 
-		if (!validateArticleCommentVO(form)) {
+		if (!validateArticleCommentVO(form)) {	
 			return;
 		}
 
