@@ -359,7 +359,7 @@
 		nhn.husky.EZCreator.createInIFrame({
 			oAppRef : oEditors,
 			elPlaceHolder : "nttCn",
-			sSkinURI : "/smarteditor/SmartEditor2Skin.html",
+			sSkinURI : "/smarteditor/SmartEditor2Skin.html?v=20220533",
 			fCreator : "createSEditor2",
 			htParams : {
 				fOnBeforeUnload : function() {

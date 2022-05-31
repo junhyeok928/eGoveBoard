@@ -23,7 +23,6 @@ import egovframework.com.sec.security.filter.EgovSpringSecurityLogoutFilter;
 import egovframework.com.uat.uap.filter.EgovLoginPolicyFilter;
 import egovframework.com.utl.wed.filter.CkFilter;
 
-
 /**
  * EgovWebApplicationInitializer 클래스
  * <Notice>

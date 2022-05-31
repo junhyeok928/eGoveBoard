@@ -335,7 +335,7 @@
     		sUploadURL;
 
     	//sUploadURL= '/smarteditor/sample/photo_uploader/file_uploader_html5.jsp'; 	//upload URL
-    	sUploadURL= 'http://localhost:8080/cmm/fms/editorFileUpload.do'; 	//upload URL
+    	sUploadURL= 'http://localhost:6060/user/cop/bbs/editorFileUpload'; 	//upload URL
 		console.log(sUploadURL);
     	//파일을 하나씩 보내고, 결과를 받음.
     	for(var j=0, k=0; j < nImageInfoCnt; j++) {
@@ -495,7 +495,7 @@
  	function callFileUploader (){
  		oFileUploader = new jindo.FileUploader(jindo.$("uploadInputBox"),{
  			//sUrl  : location.href.replace(/\/[^\/]*$/, '') + '/file_uploader_html5.jsp',	//샘플 URL입니다.
- 			sUrl  : '/com/file/editorFileUpload.do',
+ 			sUrl  : '/user/cop/bbs/editorFileUpload',
  	        sCallback : location.href.replace(/\/[^\/]*$/, '') + '/callback.html',	//업로드 이후에 iframe이 redirect될 콜백페이지의 주소
  	    	sFiletype : "*.jpg;*.png;*.bmp;*.gif",						//허용할 파일의 형식. ex) "*", "*.*", "*.jpg", 구분자(;)
  	    	sMsgNotAllowedExt : 'JPG, GIF, PNG, BMP 확장자만 가능합니다',	//허용할 파일의 형식이 아닌경우에 띄워주는 경고창의 문구
@@ -558,21 +558,24 @@
     }
 
 	window.onload = function(){
-  		checkDragAndDropAPI();
+//  		checkDragAndDropAPI();
 
-  		if(bSupportDragAndDropAPI){
-  			$Element("pop_container2").hide();
-  			$Element("pop_container").show();
+//		if(bSupportDragAndDropAPI){
+//  			$Element("pop_container2").hide();
+//  			$Element("pop_container").show();
 
-  			welTextGuide.removeClass("nobg");
-  			welTextGuide.className("bg");
+//			welTextGuide.removeClass("nobg");
+//  			welTextGuide.className("bg");
 
-  			addEvent();
-  		} else {
+//  			addEvent();
+//  		} else {
+//  			$Element("pop_container").hide();
+//  			$Element("pop_container2").show();
+//  			callFileUploader();
+//  		}
   			$Element("pop_container").hide();
   			$Element("pop_container2").show();
   			callFileUploader();
-  		}
   		fnUploadImage = $Fn(uploadImage,this);
   		$Fn(closeWindow,this).attach(welBtnCancel.$value(), "click");
 	};
