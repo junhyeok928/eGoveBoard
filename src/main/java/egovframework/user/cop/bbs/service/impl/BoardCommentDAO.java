@@ -23,15 +23,15 @@ public class BoardCommentDAO extends EgovComAbstractDAO {
 	public void insertBoardComment(Comment comment) {
 		insert("BoardComment.insertBoardComment", comment);
 	}
-	
+
 	public void deleteBoardComment(CommentVO commentVO) {
 		update("BoardComment.deleteBoardComment", commentVO);
 	}
-	
+
 	public void updateBoardComment(Comment comment) {
 		update("BoardComment.updateBoardComment", comment);
 	}
-	
+
 	public CommentVO selectBoardCommentDetail(CommentVO commentVO) {
 		return (CommentVO) selectOne("BoardComment.selectBoardCommentDetail", commentVO);
 	}

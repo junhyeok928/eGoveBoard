@@ -16,32 +16,32 @@ import egovframework.user.cop.bbs.service.SmarteditorVO;
 @Controller
 public class editorFileUpload {
 	@RequestMapping("/user/cop/bbs/editorFileUpload")
-	public String fileUpload(HttpServletRequest req, SmarteditorVO smarteditorVO)throws Exception {
+	public String fileUpload(HttpServletRequest req, SmarteditorVO smarteditorVO) throws Exception {
 		String callback = smarteditorVO.getCallback();
 		String callback_func = smarteditorVO.getCallback_func();
 		String file_result = "";
 		String result = "";
 		MultipartFile multiFile = smarteditorVO.getFiledata();
 		try {
-			if(multiFile != null && multiFile.getSize() > 0 && StringUtils.isNotBlank(multiFile.getName())) {
-				if(multiFile.getContentType().toLowerCase().startsWith("image/")) {
+			if (multiFile != null && multiFile.getSize() > 0 && StringUtils.isNotBlank(multiFile.getName())) {
+				if (multiFile.getContentType().toLowerCase().startsWith("image/")) {
 					String oriName = multiFile.getName();
 					String uploadPath = req.getServletContext().getRealPath("/img");
 					String path = uploadPath + "/smarteditor/";
 					File file = new File(path);
-					if(!file.exists()) {
+					if (!file.exists()) {
 						file.mkdirs();
 					}
 					String fileName = UUID.randomUUID().toString();
 					smarteditorVO.getFiledata().transferTo(new File(path + fileName));
 					file_result += "&bNewLine=true&sFileName=" + oriName + "&sFileURL=/img/smarteditor/" + fileName;
-				}else {
+				} else {
 					file_result += "&error=error";
 				}
-			}else {
+			} else {
 				file_result += "&error=error";
 			}
-		} catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		result = "redirect:" + callback + "?callback_func=" + URLEncoder.encode(callback_func, "UTF-8") + file_result;
