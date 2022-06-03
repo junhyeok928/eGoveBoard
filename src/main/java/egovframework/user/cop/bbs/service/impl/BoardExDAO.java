@@ -28,7 +28,7 @@ public class BoardExDAO extends EgovComAbstractDAO {
 	}
 
 	public void updateInqireCo(BoardVO boardVO) {
-		update("BBSArticle.updateInqireCo", boardVO);
+		update("BBSBoard.updateInqireCo", boardVO);
 	}
 	
 	public void insertBoard(Board board) {

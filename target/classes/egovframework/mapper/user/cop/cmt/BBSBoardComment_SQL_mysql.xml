@@ -15,17 +15,18 @@
 		<result property="frstRegisterPnttm" column="FRST_REGIST_PNTTM" />
 		<result property="frstRegisterNm" column="FRST_REGISTER_ID" />
 	</resultMap>
-	<resultMap id="commentDetail" type="egovframework.com.cop.cmt.service.CommentVO">
-		<result property="commentNo" column="ANSWER_NO"/>
-		<result property="nttId" column="NTT_ID"/>
-		<result property="bbsId" column="BBS_ID"/>
-		<result property="wrterId" column="WRTER_ID"/>
-		<result property="wrterNm" column="WRTER_NM"/>
-		<result property="commentPassword" column="PASSWORD"/>
-		<result property="commentCn" column="ANSWER"/>
-		<result property="useAt" column="USE_AT"/>
-		<result property="frstRegisterPnttm" column="FRST_REGIST_PNTTM"/>
-		<result property="frstRegisterNm" column="FRST_REGISTER_NM"/>
+	<resultMap id="commentDetail"
+		type="egovframework.com.cop.cmt.service.CommentVO">
+		<result property="commentNo" column="ANSWER_NO" />
+		<result property="nttId" column="NTT_ID" />
+		<result property="bbsId" column="BBS_ID" />
+		<result property="wrterId" column="WRTER_ID" />
+		<result property="wrterNm" column="WRTER_NM" />
+		<result property="commentPassword" column="PASSWORD" />
+		<result property="commentCn" column="ANSWER" />
+		<result property="useAt" column="USE_AT" />
+		<result property="frstRegisterPnttm" column="FRST_REGIST_PNTTM" />
+		<result property="frstRegisterNm" column="FRST_REGISTER_NM" />
 	</resultMap>
 
 	<select id="selectBoardCommentList"
@@ -99,19 +100,22 @@
 		ANSWER = #{commentCn},
 		LAST_UPDUSR_ID = #{lastUpdusrId},
 		LAST_UPDT_PNTTM = SYSDATE()
-		WHERE ANSWER_NO = #{commentNo}
+		WHERE
+		ANSWER_NO = #{commentNo}
 	</update>
-	
-	<select id="selectBoardCommentDetail" parameterType="egovframework.com.cop.cmt.service.CommentVO" resultMap="commentDetail">
-	SELECT
-	a.ANSWER_NO, a.NTT_ID,
-	a.WRTER_ID, a.WRTER_NM, a.PASSWORD, a.ANSWER, a.USE_AT,
-	DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d %H:%i:%S')
-	as FRST_REGIST_PNTTM
-	FROM
-	USERTNCOMMENT a
-	WHERE
-	a.ANSWER_NO = #{commentNo}
-					
-	</select> 
+
+	<select id="selectBoardCommentDetail"
+		parameterType="egovframework.com.cop.cmt.service.CommentVO"
+		resultMap="commentDetail">
+		SELECT
+		a.ANSWER_NO, a.NTT_ID,
+		a.WRTER_ID, a.WRTER_NM, a.PASSWORD, a.ANSWER, a.USE_AT,
+		DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d %H:%i:%S')
+		as FRST_REGIST_PNTTM
+		FROM
+		USERTNCOMMENT a
+		WHERE
+		a.ANSWER_NO = #{commentNo}
+
+	</select>
 </mapper>
