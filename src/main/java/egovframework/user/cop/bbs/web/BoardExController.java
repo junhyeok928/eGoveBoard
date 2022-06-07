@@ -102,7 +102,7 @@ public class BoardExController {
 
 		Map<String, Object> map = boardExService.selectBoardList(boardVO);
 		int totCnt = Integer.parseInt((String) map.get("resultCnt"));
-
+		List<BoardVO> noticeList = boardExService.selectNoticeBoardList(boardVO);
 		paginationInfo.setTotalRecordCount(totCnt);
 
 		// jsp로 넘어갈 model값
@@ -110,7 +110,7 @@ public class BoardExController {
 		model.addAttribute("resultCnt", map.get("resultCnt"));
 		model.addAttribute("articleVO", boardVO);
 		model.addAttribute("paginationInfo", paginationInfo);
-
+		model.addAttribute("noticeList", noticeList);
 		return "egovframework/user/cop/bbs/BBSBoardList";
 	}
 

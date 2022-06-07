@@ -191,7 +191,7 @@
 								action="<c:url value='/user/cop/bbs/selectBoardDetail.do'/>"
 							>
 								<input name="nttId" type="hidden" value="<c:out value="${noticeInfo.nttId}"/>">
-								<input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>" />
+								
 								<span class="link"><input type="submit"
 										value="<c:out value='${fn:substring(noticeInfo.nttSj, 0, 40)}'/><c:if test="${noticeInfo.commentCo != ''}">	<c:out value='[${noticeInfo.commentCo}]'/></c:if>"
 										style="border: 0px solid #e0e0e0;"

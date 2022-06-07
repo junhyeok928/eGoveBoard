@@ -19,6 +19,11 @@ public class BoardExDAO extends EgovComAbstractDAO {
 		return (Integer) selectOne("BBSBoard.selectBoardListCnt", boardVO);
 	}
 
+	@SuppressWarnings({ "unchecked", "deprecation" })
+	public List<BoardVO> selectNoticeBoardList(BoardVO boardVO) {
+		return (List<BoardVO>) list("BBSBoard.selectNoticeBoardList", boardVO);
+	}
+
 	public BoardVO selectBoardDetail(BoardVO boardVO) {
 		return (BoardVO) selectOne("BBSBoard.selectBoardDetail", boardVO);
 	}
@@ -30,16 +35,19 @@ public class BoardExDAO extends EgovComAbstractDAO {
 	public void updateInqireCo(BoardVO boardVO) {
 		update("BBSBoard.updateInqireCo", boardVO);
 	}
-	
+
 	public void insertBoard(Board board) {
 		insert("BBSBoard.insertBoard", board);
 	}
+
 	public void updateBoard(Board board) {
 		update("BBSBoard.updateBoard", board);
 	}
+
 	public void deleteBoard(Board board) {
 		update("BBSBoard.deleteBoard", board);
 	}
+
 	public void replyBoard(Board board) {
 		insert("BBSBoard.replyBoard", board);
 	}

@@ -27,11 +27,11 @@ public class BoardExServiceImpl extends EgovAbstractServiceImpl implements Board
 	protected EgovPropertyService propertyService;
 
 	@Resource(name = "egovNttIdGnrService")
-    private EgovIdGnrService nttIdgenService;
-	
+	private EgovIdGnrService nttIdgenService;
+
 	@Resource(name = "EgovFileMngService")
-    private EgovFileMngService fileService;
-	
+	private EgovFileMngService fileService;
+
 	@Override
 	public Map<String, Object> selectBoardList(BoardVO boardVO) {
 		List<?> list = boardExDAO.selectBoardList(boardVO);
@@ -45,6 +45,11 @@ public class BoardExServiceImpl extends EgovAbstractServiceImpl implements Board
 	}
 
 	@Override
+	public List<BoardVO> selectNoticeBoardList(BoardVO boardVO) {
+		return boardExDAO.selectNoticeBoardList(boardVO);
+	}
+
+	@Override
 	public BoardVO selectBoardDetail(BoardVO boardVO) {
 		int iniqireCo = boardExDAO.selectMaxInqireCo(boardVO);
 
@@ -53,9 +58,9 @@ public class BoardExServiceImpl extends EgovAbstractServiceImpl implements Board
 
 		return boardExDAO.selectBoardDetail(boardVO);
 	}
-	
+
 	@Override
-	public void insertBoard(Board board) throws FdlException{
+	public void insertBoard(Board board) throws FdlException {
 		if ("Y".equals(board.getReplyAt())) {
 			board.setNttId(nttIdgenService.getNextIntegerId());
 			boardExDAO.replyBoard(board);
@@ -64,29 +69,29 @@ public class BoardExServiceImpl extends EgovAbstractServiceImpl implements Board
 			board.setReplyLc("0");
 			board.setReplyAt("N");
 			board.setNttId(nttIdgenService.getNextIntegerId());
-			
+
 			boardExDAO.insertBoard(board);
 		}
 
 	}
-	
+
 	@Override
 	public void updateBoard(Board board) {
 		boardExDAO.updateBoard(board);
 	}
-	
+
 	@Override
-	public void deleteBoard(Board board) throws Exception{
+	public void deleteBoard(Board board) throws Exception {
 		FileVO fvo = new FileVO();
-		
+
 		fvo.setAtchFileId(board.getAtchFileId());
-		
+
 		board.setNttSj("이 글은 작성자에 의해서 삭제되었습니다.");
-		
+
 		boardExDAO.deleteBoard(board);
-		
+
 		if (!"".equals(fvo.getAtchFileId()) || fvo.getAtchFileId() != null) {
-		    fileService.deleteAllFileInf(fvo);
+			fileService.deleteAllFileInf(fvo);
 		}
 	}
 
