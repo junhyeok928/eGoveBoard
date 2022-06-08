@@ -36,6 +36,10 @@
 <!-- 게시글 상세조회 -->
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
+
+
+</head>
+<body>
 <script type="text/javascript">
 	/* ********************************************************
 	 * 삭제처리
@@ -124,9 +128,6 @@
 		<c:param name="type" value="head" />
 	</c:import>
 </c:if>
-
-</head>
-<body>
 	<!-- javascript warning tag  -->
 	<noscript class="noScriptTitle">
 		<spring:message code="common.noScriptTitle.msg" />

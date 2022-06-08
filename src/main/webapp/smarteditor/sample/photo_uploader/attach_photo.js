@@ -352,11 +352,7 @@ function addImage(ofile) {
  */
 function html5Upload() {
 	var tempFile, sUploadURL;
-
-	// sUploadURL= '/smarteditor/sample/photo_uploader/file_uploader_html5.jsp';
-	// //upload URL
-	// sUploadURL= '/com/file/editorFileUpload.do'; //upload URL 멀티 안됨
-	sUploadURL = '/smarteditor/multiImageUploader.jsp';
+	sUploadURL = '/user/cop/bbs/smarteditorMultiImageUpload.do';
 	console.log(sUploadURL);
 	// 파일을 하나씩 보내고, 결과를 받음.
 	for (var j = 0, k = 0; j < nImageInfoCnt; j++) {
@@ -593,48 +589,48 @@ function closeWindow() {
 	window.close();
 }
 
-// window.onload = function() {
-// // checkDragAndDropAPI();
+ window.onload = function() {
+ // checkDragAndDropAPI();
+
+ // if(bSupportDragAndDropAPI){
+ // $Element("pop_container2").hide();
+ // $Element("pop_container").show();
+
+ // welTextGuide.removeClass("nobg");
+ // welTextGuide.className("bg");
+
+ // addEvent();
+ // } else {
+ // $Element("pop_container").hide();
+ // $Element("pop_container2").show();
+ // callFileUploader();
+ // }
+ $Element("pop_container").hide();
+ $Element("pop_container2").show();
+ callFileUploader();
+ fnUploadImage = $Fn(uploadImage, this);
+ $Fn(closeWindow, this).attach(welBtnCancel.$value(), "click");
+ };
+
+//window.onload = function() {
+//	checkDragAndDropAPI();
 //
-// // if(bSupportDragAndDropAPI){
-// // $Element("pop_container2").hide();
-// // $Element("pop_container").show();
+//	if (bSupportDragAndDropAPI) {
+//		$Element("pop_container2").hide();
+//		$Element("pop_container").show();
 //
-// // welTextGuide.removeClass("nobg");
-// // welTextGuide.className("bg");
+//		welTextGuide.removeClass("nobg");
+//		welTextGuide.className("bg");
 //
-// // addEvent();
-// // } else {
-// // $Element("pop_container").hide();
-// // $Element("pop_container2").show();
-// // callFileUploader();
-// // }
-// $Element("pop_container").hide();
-// $Element("pop_container2").show();
-// callFileUploader();
-// fnUploadImage = $Fn(uploadImage, this);
-// $Fn(closeWindow, this).attach(welBtnCancel.$value(), "click");
-// };
-
-window.onload = function() {
-	checkDragAndDropAPI();
-
-	if (bSupportDragAndDropAPI) {
-		$Element("pop_container2").hide();
-		$Element("pop_container").show();
-
-		welTextGuide.removeClass("nobg");
-		welTextGuide.className("bg");
-
-		addEvent();
-	} else {
-		$Element("pop_container").hide();
-		$Element("pop_container2").show();
-		callFileUploader();
-	}
-	fnUploadImage = $Fn(uploadImage, this);
-	$Fn(closeWindow, this).attach(welBtnCancel.$value(), "click");
-};
+//		addEvent();
+//	} else {
+//		$Element("pop_container").hide();
+//		$Element("pop_container2").show();
+//		callFileUploader();
+//	}
+//	fnUploadImage = $Fn(uploadImage, this);
+//	$Fn(closeWindow, this).attach(welBtnCancel.$value(), "click");
+//};
 
 /**
  * 서버로부터 받은 데이타를 에디터에 전달하고 창을 닫음.

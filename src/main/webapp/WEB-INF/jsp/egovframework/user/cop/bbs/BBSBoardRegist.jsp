@@ -40,6 +40,10 @@
 	href="<c:url value='/css/egovframework/com/cmm/jqueryui.css' />"
 >
 <%-- <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/fms/EgovMultiFile.js'/>" ></script> --%>
+
+
+</head>
+<body onLoad="fn_egov_init();">
 <script type="text/javascript"
 	src="<c:url value='/js/egovframework/com/cmm/fms/EgovMultiFiles.js'/>"
 ></script>
@@ -188,10 +192,6 @@
 		}
 	}
 </script>
-
-</head>
-<body onLoad="fn_egov_init();">
-
 	<!-- javascript warning tag  -->
 	<noscript class="noScriptTitle">
 		<spring:message code="common.noScriptTitle.msg" />
