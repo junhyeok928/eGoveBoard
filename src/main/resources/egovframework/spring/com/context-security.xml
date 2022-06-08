@@ -21,6 +21,7 @@
 	<security:http pattern="/css/**" security="none"/>
 	<security:http pattern="/html/**" security="none"/>
     <security:http pattern="/images/**" security="none"/>
+    <security:http pattern="/img/**" security="none"/>
     <security:http pattern="/editorFileUpload.do" security="none"/>
  	<security:http pattern="/js/**" security="none"/>
  	<security:http pattern="/resource/**" security="none"/>
@@ -57,7 +58,7 @@
 		xframeOptions="SAMEORIGIN" 
 		xssProtection="true" 
 		cacheControl="false"
-		csrf="false"
+		csrf="true"
 		csrfAccessDeniedUrl="/egovCSRFAccessDenied.do"
 	/>
 

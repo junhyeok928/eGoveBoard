@@ -66,6 +66,12 @@
 
 	<dependencies>
 		<!-- 표준프레임워크 실행환경 -->
+		<!--싸이트 메쉬 추가 -->
+	<dependency>
+	    <groupId>opensymphony</groupId>
+	    <artifactId>sitemesh</artifactId>
+	    <version>2.4.2</version>
+	</dependency>
 		<dependency>
 			<groupId>egovframework.rte</groupId>
 			<artifactId>egovframework.rte.ptl.mvc</artifactId>

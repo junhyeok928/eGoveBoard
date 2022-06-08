@@ -116,8 +116,8 @@ public class BoardExController {
 
 	// 게시글 디테일
 	@GetMapping("/selectBoardDetail.do")
-	public String selectBoardDetail(HttpServletRequest request, @ModelAttribute("searchVO1") BoardVO boardVO,
-			@ModelAttribute("searchVO") CommentVO commentVO, ModelMap model) throws Exception {
+	public String selectBoardDetail(HttpServletRequest request, @ModelAttribute BoardVO boardVO,
+			@ModelAttribute CommentVO commentVO, ModelMap model) throws Exception {
 		BoardVO vo = null;
 		CommentVO cvo = null;
 		if (RequestContextUtils.getInputFlashMap(request) == null) {

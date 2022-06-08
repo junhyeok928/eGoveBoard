@@ -1,21 +1,21 @@
 
 <%
 	/**
- * @Class Name : EgovArticleList.jsp
- * @Description : EgovArticleList 화면
- * @Modification Information
- * @
- * @  수정일             수정자                   수정내용
- * @ -------    --------    ---------------------------
- * @ 2009.02.01   박정규              최초 생성
- *   2016.06.13   김연호              표준프레임워크 v3.6 개선
- *   2018.06.15   신용호              페이징 처리 오류 개선
- *  @author 공통서비스팀
- *  @since 2009.02.01
- *  @version 1.0
- *  @see
- *
- */
+* @Class Name : EgovArticleList.jsp
+* @Description : EgovArticleList 화면
+* @Modification Information
+* @
+* @  수정일             수정자                   수정내용
+* @ -------    --------    ---------------------------
+* @ 2009.02.01   박정규              최초 생성
+*   2016.06.13   김연호              표준프레임워크 v3.6 개선
+*   2018.06.15   신용호              페이징 처리 오류 개선
+*  @author 공통서비스팀
+*  @since 2009.02.01
+*  @version 1.0
+*  @see
+*
+*/
 %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -34,75 +34,76 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 <link href="<c:url value='${brdMstrVO.tmplatCours}' />" rel="stylesheet" type="text/css">
-<c:choose>
-	<c:when test="${preview == 'true'}">
-		<script type="text/javascript">
-			/*********************************************************
-			 * 초기화
-			 ******************************************************** */
-			function fn_egov_init() {
-				// 첫 입력란에 포커스..
-				document.articleForm.searchCnd.focus();
-			}
 
-			/*********************************************************
-			 * 페이징 처리 함수
-			 ******************************************************** */
-			function fn_egov_select_linkPage(pageNo) {
-			}
-			/*********************************************************
-			 * 조회 처리 함수
-			 ******************************************************** */
-			function fn_egov_search_article() {
-			}
-			/* ********************************************************
-			 * 상세회면 처리 함수
-			 ******************************************************** */
-			function fn_egov_inquire_articledetail(nttId) {
-				alert('test');
-				return true;
-			}
-		</script>
-	</c:when>
-	<c:otherwise>
-		<script type="text/javascript">
-			/*********************************************************
-			 * 초기화
-			 ******************************************************** */
-			function fn_egov_init() {
-				// 첫 입력란에 포커스..
-				document.articleForm.searchCnd.focus();
-			}
-
-			/*********************************************************
-			 * 페이징 처리 함수
-			 ******************************************************** */
-			function fn_egov_select_linkPage(pageNo) {
-				document.articleForm.pageIndex.value = pageNo;
-				document.articleForm.action = "<c:url value='/user/cop/bbs/selectBoardList.do'/>";
-				document.articleForm.submit();
-			}
-			/*********************************************************
-			 * 조회 처리 함수
-			 ******************************************************** */
-			function fn_egov_search_article() {
-				document.articleForm.pageIndex.value = 1;
-				document.articleForm.submit();
-			}
-			/* ********************************************************
-			 * 상세회면 처리 함수
-			 ******************************************************** */
-			function fn_egov_inquire_articledetail(nttId) {
-				// 사이트 키값(siteId) 셋팅.
-				document.articleForm.nttId.value = nttId;
-				document.articleForm.action = "<c:url value='/user/cop/bbs/selectBoardDetail.do'/>";
-				document.articleForm.submit();
-			}
-		</script>
-	</c:otherwise>
-</c:choose>
 </head>
 <body onload="fn_egov_init()">
+	<c:choose>
+		<c:when test="${preview == 'true'}">
+			<script type="text/javascript">
+				/*********************************************************
+				 * 초기화
+				 ******************************************************** */
+				function fn_egov_init() {
+					// 첫 입력란에 포커스..
+					document.articleForm.searchCnd.focus();
+				}
+
+				/*********************************************************
+				 * 페이징 처리 함수
+				 ******************************************************** */
+				function fn_egov_select_linkPage(pageNo) {
+				}
+				/*********************************************************
+				 * 조회 처리 함수
+				 ******************************************************** */
+				function fn_egov_search_article() {
+				}
+				/* ********************************************************
+				 * 상세회면 처리 함수
+				 ******************************************************** */
+				function fn_egov_inquire_articledetail(nttId) {
+					alert('test');
+					return true;
+				}
+			</script>
+		</c:when>
+		<c:otherwise>
+			<script type="text/javascript">
+				/*********************************************************
+				 * 초기화
+				 ******************************************************** */
+				function fn_egov_init() {
+					// 첫 입력란에 포커스..
+					document.articleForm.searchCnd.focus();
+				}
+
+				/*********************************************************
+				 * 페이징 처리 함수
+				 ******************************************************** */
+				function fn_egov_select_linkPage(pageNo) {
+					document.articleForm.pageIndex.value = pageNo;
+					document.articleForm.action = "<c:url value='/user/cop/bbs/selectBoardList.do'/>";
+					document.articleForm.submit();
+				}
+				/*********************************************************
+				 * 조회 처리 함수
+				 ******************************************************** */
+				function fn_egov_search_article() {
+					document.articleForm.pageIndex.value = 1;
+					document.articleForm.submit();
+				}
+				/* ********************************************************
+				 * 상세회면 처리 함수
+				 ******************************************************** */
+				function fn_egov_inquire_articledetail(nttId) {
+					// 사이트 키값(siteId) 셋팅.
+					document.articleForm.nttId.value = nttId;
+					document.articleForm.action = "<c:url value='/user/cop/bbs/selectBoardDetail.do'/>";
+					document.articleForm.submit();
+				}
+			</script>
+		</c:otherwise>
+	</c:choose>
 	<!-- javascript warning tag  -->
 	<noscript class="noScriptTitle">
 		<spring:message code="common.noScriptTitle.msg" />
@@ -138,8 +139,7 @@
 							value='<c:out value="${searchVO.searchWrd}"/>' maxlength="155"
 						> <input type="submit" class="s_btn" value="<spring:message code="button.inquire" />"
 							title="<spring:message code="title.inquire" /> <spring:message code="input.button" />"
-						/>
-						<!-- 조회 --> <c:if test="${preview != 'true'}">
+						/> <!-- 조회 --> <c:if test="${preview != 'true'}">
 							<span class="btn_b"><a href="<c:url value='/user/cop/bbs/insertBoardView.do' />"
 								title="<spring:message code="button.create" /> <spring:message code="input.button" />"
 							><spring:message code="button.create" /></a></span>
@@ -191,7 +191,7 @@
 								action="<c:url value='/user/cop/bbs/selectBoardDetail.do'/>"
 							>
 								<input name="nttId" type="hidden" value="<c:out value="${noticeInfo.nttId}"/>">
-								
+
 								<span class="link"><input type="submit"
 										value="<c:out value='${fn:substring(noticeInfo.nttSj, 0, 40)}'/><c:if test="${noticeInfo.commentCo != ''}">	<c:out value='[${noticeInfo.commentCo}]'/></c:if>"
 										style="border: 0px solid #e0e0e0;"
@@ -239,30 +239,28 @@
 										<c:when test="${preview == 'true'}">
 											<input name="nttId" type="hidden" value="<c:out value="${resultInfo.nttId}"/>">
 											<input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>" />
-											<span class="link">
-												<c:if test="${resultInfo.replyLc!=0}">
+											<span class="link"> <c:if test="${resultInfo.replyLc!=0}">
 													<c:forEach begin="0" end="${resultInfo.replyLc}" step="1">&nbsp;	</c:forEach>
 													<img src="<c:url value='/images/egovframework/com/cop/bbs/icon_reply.png'/>"
 														alt="secret"
 													>
-												</c:if>
-												<input type="submit"
+												</c:if> <input type="submit"
 													value="<c:out value='${fn:substring(resultInfo.nttSj, 0, 40)}'/><c:if test="${resultInfo.commentCo != ''}">	<c:out value='[${resultInfo.commentCo}]'/></c:if>"
 													style="border: 0px solid #e0e0e0;"
 												></span>
 										</c:when>
 										<c:otherwise>
 											<form name="subForm" method="get"
-												action="<c:url value='/user/cop/bbs/selectBoardDetail.do'/>">
+												action="<c:url value='/user/cop/bbs/selectBoardDetail.do'/>"
+											>
 												<input name="nttId" type="hidden" value="<c:out value="${resultInfo.nttId}"/>">
-<%-- 												<input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>" /> --%>
+												<%-- 												<input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>" /> --%>
 												<span class="link"><c:if test="${resultInfo.replyLc!=0}">
 														<c:forEach begin="0" end="${resultInfo.replyLc}" step="1">&nbsp;	</c:forEach>
 														<img src="<c:url value='/images/egovframework/com/cop/bbs/icon_reply.png'/>"
 															alt="secret"
 														>
-													</c:if>
-													<input type="submit"
+													</c:if> <input type="submit"
 														value="<c:out value='${fn:substring(resultInfo.nttSj, 0, 40)}'/><c:if test="${resultInfo.commentCo != ''}">	<c:out value='[${resultInfo.commentCo}]'/></c:if>"
 														style="border: 0px solid #e0e0e0;"
 													></span>

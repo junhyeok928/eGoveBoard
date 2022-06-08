@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<decorators defaultdir="/WEB-INF/decorators">
+
+    <decorator name="main" page="mainLayout.jsp">
+<!--         <pattern>/ktl/*.do</pattern> -->
+<!--         <pattern>/ktl/**/*.do</pattern> -->
+<!--         <pattern>/uat/uia/*.do</pattern> -->
+        <pattern>/user/**/**/*.do</pattern>
+<!--        	<pattern>/user/*.do</pattern> -->
+    </decorator>
+
+</decorators>

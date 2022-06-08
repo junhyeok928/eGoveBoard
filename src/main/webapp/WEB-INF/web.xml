@@ -9,7 +9,15 @@
    2013.5.31        이기하         미사용 filter 정리(.mdo, .action)
    2016.6.34        장동한         WebApplicationInitializer 방식으로 변경
 -->
-    
+	<filter>
+	    <filter-name>sitemeshPageFilter</filter-name>
+	    <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>sitemeshPageFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	    <!-- <dispatcher>FORWARD</dispatcher> -->
+	</filter-mapping>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
         <welcome-file>egovDevIndex.jsp</welcome-file>
